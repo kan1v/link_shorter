@@ -1,0 +1,197 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Мій профіль{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-10 px-4">
+    <h1 class="text-4xl font-bold text-center mb-10">Мій профіль</h1>
+
+    <!-- Сообщения -->
+    {% if messages %}
+    <div class="mb-6">
+        {% for message in messages %}
+        <div class="px-4 py-2 rounded {{ message.tags }} bg-indigo-100 text-indigo-700 mb-2 animate-pulse">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Вкладки -->
+    <div class="bg-white shadow-lg rounded-xl p-6">
+        <div class="flex border-b border-gray-200 mb-6">
+            <button id="tab-profile"
+                class="px-4 py-2 text-indigo-600 font-semibold border-b-2 border-indigo-600 focus:outline-none">
+                Профіль
+            </button>
+            <button id="tab-password"
+                class="px-4 py-2 text-gray-500 hover:text-indigo-600 font-semibold border-b-2 border-transparent focus:outline-none">
+                Пароль
+            </button>
+        </div>
+
+        <!-- Профиль -->
+        <div id="profile-section">
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <!-- Аватар -->
+                <div class="flex flex-col items-center space-y-4">
+                    <!-- Текущий аватар -->
+                    <div class="relative">
+                        {% if user.avatar %}
+                        <img id="avatarPreview" src="{{ user.avatar.url }}" alt="Аватар"
+                            class="w-32 h-32 rounded-full object-cover shadow-md border border-gray-200">
+                        {% else %}
+                        <img id="avatarPreview" src="https://via.placeholder.com/150" alt="Аватар"
+                            class="w-32 h-32 rounded-full object-cover shadow-md border border-gray-200">
+                        {% endif %}
+                    </div>
+
+                    <!-- Красивая кнопка -->
+                    <label for="id_avatar"
+                        class="cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition duration-300">
+                        Завантажити нове фото
+                    </label>
+                    <input type="file" name="avatar" id="id_avatar" accept="image/*" class="hidden">
+
+                    {% if form.avatar.errors %}
+                    <p class="text-red-600 text-sm">{{ form.avatar.errors }}</p>
+                    {% endif %}
+                    <p class="text-gray-400 text-sm">Максимум 2МБ, JPG/PNG</p>
+                </div>
+
+
+                <!-- Скрыть стандартный input -->
+                <style>
+                    #id_avatar {
+                        display: none;
+                    }
+                </style>
+
+
+                <!-- Поля профиля -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        {{ form.username.label_tag }}
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                        <p class="text-red-600 text-sm">{{ form.username.errors }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {{ form.email.label_tag }}
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <p class="text-red-600 text-sm">{{ form.email.errors }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {{ form.first_name.label_tag }}
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                        <p class="text-red-600 text-sm">{{ form.first_name.errors }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {{ form.last_name.label_tag }}
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                        <p class="text-red-600 text-sm">{{ form.last_name.errors }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div>
+                    {{ form.bio.label_tag }}
+                    {{ form.bio }}
+                    {% if form.bio.errors %}
+                    <p class="text-red-600 text-sm">{{ form.bio.errors }}</p>
+                    {% endif %}
+                </div>
+
+                <button type="submit"
+                    class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-all duration-300">
+                    Зберегти зміни
+                </button>
+            </form>
+        </div>
+
+        <!-- Изменение пароля -->
+        <div id="password-section" class="hidden">
+            <form method="POST" action="{% url 'accounts:password_change' %}" class="space-y-6">
+                {% csrf_token %}
+                {{ password_form.non_field_errors }}
+
+                <div>
+                    {{ password_form.old_password.label_tag }}
+                    {{ password_form.old_password }}
+                    {% if password_form.old_password.errors %}
+                    <p class="text-red-600 text-sm">{{ password_form.old_password.errors }}</p>
+                    {% endif %}
+                </div>
+                <div>
+                    {{ password_form.new_password1.label_tag }}
+                    {{ password_form.new_password1 }}
+                    {% if password_form.new_password1.errors %}
+                    <p class="text-red-600 text-sm">{{ password_form.new_password1.errors }}</p>
+                    {% endif %}
+                </div>
+                <div>
+                    {{ password_form.new_password2.label_tag }}
+                    {{ password_form.new_password2 }}
+                    {% if password_form.new_password2.errors %}
+                    <p class="text-red-600 text-sm">{{ password_form.new_password2.errors }}</p>
+                    {% endif %}
+                </div>
+
+                <button type="submit"
+                    class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-all duration-300">
+                    Змінити пароль
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JS -->
+<script>
+    const profileTab = document.getElementById('tab-profile');
+    const passwordTab = document.getElementById('tab-password');
+    const profileSection = document.getElementById('profile-section');
+    const passwordSection = document.getElementById('password-section');
+    const avatarInput = document.getElementById('id_avatar');
+    const avatarPreview = document.getElementById('avatarPreview');
+
+    profileTab.addEventListener('click', () => {
+        profileTab.classList.add('text-indigo-600', 'border-indigo-600');
+        profileTab.classList.remove('text-gray-500');
+        passwordTab.classList.remove('text-indigo-600', 'border-indigo-600');
+        passwordTab.classList.add('text-gray-500');
+
+        profileSection.classList.remove('hidden');
+        passwordSection.classList.add('hidden');
+    });
+
+    passwordTab.addEventListener('click', () => {
+        passwordTab.classList.add('text-indigo-600', 'border-indigo-600');
+        passwordTab.classList.remove('text-gray-500');
+        profileTab.classList.remove('text-indigo-600', 'border-indigo-600');
+        profileTab.classList.add('text-gray-500');
+
+        passwordSection.classList.remove('hidden');
+        profileSection.classList.add('hidden');
+    });
+
+    // Превью аватара
+    if (avatarInput) {
+        avatarInput.addEventListener('change', (e) => {
+            const [file] = e.target.files;
+            if (file) {
+                avatarPreview.src = URL.createObjectURL(file);
+            }
+        });
+    }
+</script>
+{% endblock %}

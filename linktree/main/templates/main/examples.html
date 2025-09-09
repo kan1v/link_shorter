@@ -1,0 +1,44 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}Приклади профілів | LinkTree{% endblock %}
+
+{% block content %}
+<section class="text-center mb-12">
+    <h2 class="text-4xl font-bold">Приклади профілів</h2>
+    <p class="mt-4 text-gray-600">Надихайся готовими шаблонами та створи свій унікальний LinkTree.</p>
+</section>
+
+<div class="grid md:grid-cols-3 gap-8">
+    <!-- Example 1 -->
+    <div class="bg-white shadow-xl rounded-2xl p-6 text-center">
+        <img src="{% static 'main/images/example1.png' %}" alt="Приклад профілю 1"
+             class="w-full h-76 object-cover rounded-xl mb-4">
+        <h3 class="text-xl font-semibold">Блогер</h3>
+        <p class="text-gray-600">Посилання на Instagram, TikTok та YouTube.</p>
+    </div>
+
+    <!-- Example 2 -->
+    <div class="bg-white shadow-xl rounded-2xl p-6 text-center">
+        <img src="{% static 'main/images/example2.png' %}" alt="Приклад профілю 2"
+             class="w-full h-76 object-cover rounded-xl mb-4">
+        <h3 class="text-xl font-semibold">Підприємець</h3>
+        <p class="text-gray-600">Магазин, сайт компанії та соцмережі.</p>
+    </div>
+
+    <!-- Example 3 -->
+    <div class="bg-white shadow-xl rounded-2xl p-6 text-center">
+        <img src="{% static 'main/images/example3.png' %}" alt="Приклад профілю 3"
+             class="w-full h-76 object-cover rounded-xl mb-4">
+        <h3 class="text-xl font-semibold">Музикант</h3>
+        <p class="text-gray-600">Spotify, SoundCloud та афіша концертів.</p>
+    </div>
+</div>
+
+<div class="text-center mt-12">
+    <a href="{% url 'accounts:register' %}" 
+       class="bg-indigo-600 text-white px-8 py-3 rounded-xl text-lg font-semibold hover:bg-indigo-700 transition">
+        Створити свій профіль
+    </a>
+</div>
+{% endblock %}

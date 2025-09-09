@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LinkTree{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 flex flex-col min-h-screen">
+
+    <!-- Навігація -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <a href="{% url 'main:index' %}" class="text-2xl font-bold text-indigo-600">🌿 LinkTree</a>
+            <nav class="space-x-6">
+                <a href="{% url 'main:index' %}" class="hover:text-indigo-500">Головна</a>
+                <a href="{% url 'main:prices' %}" class="hover:text-indigo-500">Тарифи</a>
+                <a href="{% url 'main:examples' %}" class="hover:text-indigo-500">Приклади</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'accounts:profile' %}" class="hover:text-indigo-500">Мій профіль</a>
+                    <a href="{% url 'accounts:logout' %}" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Вийти</a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" class="hover:text-indigo-500">Увійти</a>
+                    <a href="{% url 'accounts:register' %}" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">Реєстрація</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <!-- Повідомлення -->
+    {% if messages %}
+    <div class="fixed top-5 right-5 z-50 space-y-3">
+        {% for message in messages %}
+            <div class="alert px-4 py-3 rounded-lg shadow-lg text-white animate-fade-in-down
+                        {% if message.tags == 'error' %} bg-red-500 
+                        {% elif message.tags == 'success' %} bg-green-500 
+                        {% elif message.tags == 'warning' %} bg-yellow-500 
+                        {% else %} bg-blue-500 {% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Контент -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Футер -->
+    <footer class="bg-gray-100 py-6 mt-10 border-t">
+        <div class="container mx-auto text-center text-gray-500">
+            © 2025 LinkTree. Усі права захищено.
+        </div>
+    </footer>
+
+    <!-- JS для анімації -->
+    <script>
+        // Додаємо анімацію для появи/зникання
+        document.addEventListener("DOMContentLoaded", () => {
+            const alerts = document.querySelectorAll(".alert");
+            alerts.forEach((alert) => {
+                setTimeout(() => {
+                    alert.classList.add("opacity-0", "translate-y-2");
+                }, 4000); // зникне через 4с
+                setTimeout(() => {
+                    alert.remove();
+                }, 4500);
+            });
+        });
+    </script>
+
+    <!-- Tailwind кастомна анімація -->
+    <style>
+        .animate-fade-in-down {
+            animation: fadeInDown 0.5s ease-out;
+        }
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</body>
+</html>

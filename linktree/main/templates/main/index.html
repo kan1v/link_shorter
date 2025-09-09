@@ -1,0 +1,41 @@
+{% extends "main/base.html" %}
+
+{% block title %}Головна | LinkTree{% endblock %}
+
+{% block content %}
+<section class="text-center py-20">
+    <h1 class="text-5xl font-extrabold text-gray-900">
+        Створи свій <span class="text-indigo-600">особистий LinkTree</span>
+    </h1>
+    <p class="mt-6 text-lg text-gray-600 max-w-2xl mx-auto">
+        Один лінк для всіх твоїх соцмереж, сайтів та проєктів. Ділися всім лише за одним посиланням.
+    </p>
+    <div class="mt-8">
+        {% if not user.is_authenticated %}
+            <a href="{% url 'accounts:register' %}" class="bg-indigo-600 text-white px-8 py-3 rounded-xl text-lg font-semibold hover:bg-indigo-700 transition">
+                Почати безкоштовно
+            </a>
+        {% else %}
+            <a href="{% url 'accounts:profile' %}" class="bg-green-500 text-white px-8 py-3 rounded-xl text-lg font-semibold hover:bg-green-600 transition">
+                Перейти до мого профілю
+            </a>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Переваги -->
+<section class="grid md:grid-cols-3 gap-8 mt-16">
+    <div class="bg-white shadow-lg rounded-xl p-6 text-center">
+        <h3 class="text-xl font-bold mb-3">🌐 Безлімітні посилання</h3>
+        <p class="text-gray-600">Додавай стільки посилань, скільки потрібно, та поширюй їх одним кліком.</p>
+    </div>
+    <div class="bg-white shadow-lg rounded-xl p-6 text-center">
+        <h3 class="text-xl font-bold mb-3">📊 Аналітика</h3>
+        <p class="text-gray-600">Відстежуй кількість кліків та активність відвідувачів.</p>
+    </div>
+    <div class="bg-white shadow-lg rounded-xl p-6 text-center">
+        <h3 class="text-xl font-bold mb-3">🎨 Персоналізація</h3>
+        <p class="text-gray-600">Обирай стиль, кольори та теми для свого профілю.</p>
+    </div>
+</section>
+{% endblock %}
