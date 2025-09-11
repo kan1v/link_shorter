@@ -1,0 +1,73 @@
+{% extends 'main/base.html' %}
+{% block title %}Редагування профілю{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto py-10 px-4">
+    <h1 class="text-3xl font-bold mb-6">Редагування публічного профілю</h1>
+
+    <form method="POST" class="space-y-6">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div>
+            {{ form.background_color.label_tag }}
+            {{ form.background_color }}
+        </div>
+
+        <div>
+            {{ form.button_style.label_tag }}
+            {{ form.button_style }}
+        </div>
+
+        <h2 class="text-xl font-semibold mt-6 mb-2">Соцмережі</h2>
+        {{ social_formset.management_form }}
+        {% for form in social_formset %}
+            <div class="grid grid-cols-2 gap-4 mb-2 items-end">
+                <div>{{ form.title }}</div>
+                <div>{{ form.url }}</div>
+                <div>{{ form.DELETE }} Видалити</div>
+            </div>
+        {% endfor %}
+        <button type="button" id="add-social" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">Додати соцмережу</button>
+
+        <h2 class="text-xl font-semibold mt-6 mb-2">Кнопки</h2>
+        {{ button_formset.management_form }}
+        {% for form in button_formset %}
+            <div class="grid grid-cols-2 gap-4 mb-2 items-end">
+                <div>{{ form.title }}</div>
+                <div>{{ form.url }}</div>
+                <div>{{ form.DELETE }} Видалити</div>
+            </div>
+        {% endfor %}
+        <button type="button" id="add-button" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">Додати кнопку</button>
+
+        <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-lg mt-4">Зберегти зміни</button>
+    </form>
+</div>
+
+<script>
+    // JS для добавления новых форм соцсетей/кнопок
+    const addSocial = document.getElementById('add-social');
+    const addButton = document.getElementById('add-button');
+
+    addSocial?.addEventListener('click', function() {
+        const totalForms = document.querySelector('#id_sociallink_set-TOTAL_FORMS');
+        const formContainer = totalForms.closest('form');
+        let formCount = parseInt(totalForms.value);
+        const newForm = formContainer.querySelector('.grid').cloneNode(true);
+        newForm.querySelectorAll('input').forEach(input => input.value = '');
+        formContainer.insertBefore(newForm, addSocial);
+        totalForms.value = formCount + 1;
+    });
+
+    addButton?.addEventListener('click', function() {
+        const totalForms = document.querySelector('#id_custombutton_set-TOTAL_FORMS');
+        const formContainer = totalForms.closest('form');
+        let formCount = parseInt(totalForms.value);
+        const newForm = formContainer.querySelector('.grid').cloneNode(true);
+        newForm.querySelectorAll('input').forEach(input => input.value = '');
+        formContainer.insertBefore(newForm, addButton);
+        totalForms.value = formCount + 1;
+    });
+</script>
+{% endblock %}

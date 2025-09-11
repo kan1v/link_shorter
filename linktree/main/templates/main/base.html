@@ -19,6 +19,7 @@
                 <a href="{% url 'main:examples' %}" class="hover:text-indigo-500">Приклади</a>
                 {% if user.is_authenticated %}
                     <a href="{% url 'accounts:profile' %}" class="hover:text-indigo-500">Мій профіль</a>
+                    <a href="{% url 'profiles:edit_public_profile' %}" class="hover:text-indigo-500">Налаштування та аналітика</a>
                     <a href="{% url 'accounts:logout' %}" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Вийти</a>
                 {% else %}
                     <a href="{% url 'accounts:login' %}" class="hover:text-indigo-500">Увійти</a>

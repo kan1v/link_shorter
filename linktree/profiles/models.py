@@ -30,7 +30,7 @@ class SocialLink(models.Model):
         return f"{self.name} ({self.profile.user.username})"
     
 
-class CustomLink(models.Model):
+class CustomButton(models.Model):
     profile = models.ForeignKey(PublicProfile, on_delete=models.CASCADE, related_name="custom_links")
     title = models.CharField(max_length=100, verbose_name="Назва")
     url = models.URLField(verbose_name="Посилання")
