@@ -1,42 +1,54 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ profile.user.username }}</title>
-<script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ profile.user.username }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50">
 
-<div class="min-h-screen flex flex-col items-center justify-center" style="background-color: {{ profile.background_color|default:'#ffffff' }}">
-    <div class="text-center p-6 bg-white rounded-xl shadow-lg w-full max-w-md">
-        <img src="{{ profile.user.avatar.url }}" alt="Аватар"
-            class="w-32 h-32 mx-auto rounded-full object-cover border border-gray-200 mb-4">
-        <h1 class="text-2xl font-bold">{{ profile.user.first_name }} {{ profile.user.last_name }}</h1>
+  <div class="min-h-screen flex items-center justify-center" 
+       style="background-color: {{ profile.background_color|default:'#ffffff' }};">
+    <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-6 text-center">
+      {% if profile.user.avatar %}
+        <img src="{{ profile.user.avatar.url }}" alt="Аватар" class="w-28 h-28 mx-auto rounded-full object-cover mb-4 border">
+      {% endif %}
+      <h1 class="text-2xl font-bold mb-1">{{ profile.user.first_name }} {{ profile.user.last_name }}</h1>
+      {% if profile.user.bio %}
         <p class="text-gray-600 mb-4">{{ profile.user.bio }}</p>
+      {% endif %}
 
-        <div class="space-y-2 mb-4">
-            {% for link in profile.social_links.all %}
-                <a href="{{ link.url }}" target="_blank"
-                    class="block {{ profile.button_style }} w-full text-center">
-                    {{ link.title }}
-                </a>
-            {% endfor %}
-        </div>
+      <!-- Соцмережі -->
+      <div class="space-y-3 mb-4">
+        {% if profile.social_links.count %}
+          {% for link in profile.social_links.all %}
+            <a href="{{ link.url }}" target="_blank"
+               class="block w-full py-2 px-4 bg-blue-500 text-white rounded-lg shadow-sm">
+              {{ link.name }}
+            </a>
+          {% endfor %}
+        {% else %}
+          <p class="text-gray-400">Соцмережі ще не додані</p>
+        {% endif %}
+      </div>
 
-        <div class="space-y-2">
-            {% for btn in profile.custom_buttons.all %}
-                <a href="{{ btn.url }}" target="_blank"
-                    class="block {{ profile.button_style }} w-full text-center">
-                    {{ btn.title }}
-                </a>
-            {% endfor %}
-        </div>
+      <!-- Кнопки -->
+      <div class="space-y-3">
+        {% if profile.custom_links.count %}
+          {% for btn in profile.custom_links.all %}
+            <a href="{{ btn.url }}" target="_blank"
+               class="block w-full py-2 px-4 bg-gray-800 text-white rounded-lg shadow-sm">
+              {{ btn.title }}
+            </a>
+          {% endfor %}
+        {% else %}
+          <p class="text-gray-400">Кнопки ще не додані</p>
+        {% endif %}
+      </div>
+
     </div>
+  </div>
 
-    <footer class="mt-10 text-gray-400 text-sm">
-        Створено за допомогою LinkTree
-    </footer>
-</div>
 </body>
 </html>

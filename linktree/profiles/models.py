@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+from django.utils.text import slugify
+import uuid
 
 class PublicProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='public_profile')
@@ -17,18 +19,26 @@ class PublicProfile(models.Model):
 
     def __str__(self):
         return f"Публічний профіль {self.user.username}"    
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.user.username)
+            slug = base_slug
+            counter = 1
+            while PublicProfile.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
 
 class SocialLink(models.Model):
     profile = models.ForeignKey(PublicProfile, on_delete=models.CASCADE, related_name="social_links")
     name = models.CharField(max_length=50, verbose_name="Назва соцмережі")
     url = models.URLField(verbose_name="Посилання")
 
-    class Meta:
-        unique_together = ("profile", "name")
-
     def __str__(self):
         return f"{self.name} ({self.profile.user.username})"
-    
+
 
 class CustomButton(models.Model):
     profile = models.ForeignKey(PublicProfile, on_delete=models.CASCADE, related_name="custom_links")
@@ -41,3 +51,4 @@ class CustomButton(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.profile.user.username})"
+
