@@ -6,48 +6,60 @@
   <title>{{ profile.user.username }}</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50">
+<body 
+  class="min-h-screen bg-gray-50 flex items-center justify-center"
+  {% if profile.background %}
+    style="background-image: url('{{ profile.background.url }}'); background-size: cover; background-position: center;"
+  {% else %}
+    style="background-color: {{ profile.background_color|default:'#ffffff' }};"
+  {% endif %}
+>
 
-  <div class="min-h-screen flex items-center justify-center" 
-       style="background-color: {{ profile.background_color|default:'#ffffff' }};">
-    <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-6 text-center">
-      {% if profile.user.avatar %}
-        <img src="{{ profile.user.avatar.url }}" alt="Аватар" class="w-28 h-28 mx-auto rounded-full object-cover mb-4 border">
+  <div class="w-full max-w-md text-center space-y-4">
+    <!-- Аватар -->
+    {% if profile.user.avatar %}
+      <img src="{{ profile.user.avatar.url }}" alt="Аватар" 
+           class="w-28 h-28 mx-auto rounded-full object-cover border-2 border-white shadow-lg">
+    {% endif %}
+
+    <!-- Имя и фамилия -->
+    <h1 class="text-2xl font-bold text-white drop-shadow-md">
+      {{ profile.user.first_name }} {{ profile.user.last_name }}
+    </h1>
+
+    <!-- Описание -->
+    {% if profile.user.bio %}
+      <p class="text-white text-opacity-90 drop-shadow-md">{{ profile.user.bio }}</p>
+    {% endif %}
+
+    <!-- Соцмережі -->
+    <div class="space-y-3">
+      {% if profile.social_links.exists %}
+        {% for link in profile.social_links.all %}
+          <a href="{{ link.url }}" target="_blank"
+             class="block py-2 px-4 bg-blue-500 text-white rounded-lg shadow-md">
+            {{ link.name }}
+          </a>
+        {% endfor %}
+      {% else %}
+        <p class="text-white text-opacity-60">Соцмережі ще не додані</p>
       {% endif %}
-      <h1 class="text-2xl font-bold mb-1">{{ profile.user.first_name }} {{ profile.user.last_name }}</h1>
-      {% if profile.user.bio %}
-        <p class="text-gray-600 mb-4">{{ profile.user.bio }}</p>
-      {% endif %}
-
-      <!-- Соцмережі -->
-      <div class="space-y-3 mb-4">
-        {% if profile.social_links.count %}
-          {% for link in profile.social_links.all %}
-            <a href="{{ link.url }}" target="_blank"
-               class="block w-full py-2 px-4 bg-blue-500 text-white rounded-lg shadow-sm">
-              {{ link.name }}
-            </a>
-          {% endfor %}
-        {% else %}
-          <p class="text-gray-400">Соцмережі ще не додані</p>
-        {% endif %}
-      </div>
-
-      <!-- Кнопки -->
-      <div class="space-y-3">
-        {% if profile.custom_links.count %}
-          {% for btn in profile.custom_links.all %}
-            <a href="{{ btn.url }}" target="_blank"
-               class="block w-full py-2 px-4 bg-gray-800 text-white rounded-lg shadow-sm">
-              {{ btn.title }}
-            </a>
-          {% endfor %}
-        {% else %}
-          <p class="text-gray-400">Кнопки ще не додані</p>
-        {% endif %}
-      </div>
-
     </div>
+
+    <!-- Кнопки -->
+    <div class="space-y-3">
+      {% if profile.custom_links.exists %}
+        {% for btn in profile.custom_links.all %}
+          <a href="{{ btn.url }}" target="_blank"
+             class="block py-2 px-4 bg-gray-800 text-white rounded-lg shadow-md">
+            {{ btn.title }}
+          </a>
+        {% endfor %}
+      {% else %}
+        <p class="text-white text-opacity-60">Кнопки ще не додані</p>
+      {% endif %}
+    </div>
+
   </div>
 
 </body>

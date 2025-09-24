@@ -6,47 +6,29 @@ from .models import PublicProfile, SocialLink, CustomButton
 User = get_user_model()
 
 
-class PublicProfileForm(forms.ModelForm):
-    username = forms.CharField(
-        label="Логін",
-        widget=forms.TextInput(attrs={
-            "class": "w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500",
-            "placeholder": "Введіть логін",
-        })
-    )
-    first_name = forms.CharField(
-        label="Ім'я",
-        widget=forms.TextInput(attrs={
-            "class": "w-full px-4 py-2 border rounded-lg",
-            "placeholder": "Введіть ім'я",
-        })
-    )
-    last_name = forms.CharField(
-        label="Прізвище",
-        widget=forms.TextInput(attrs={
-            "class": "w-full px-4 py-2 border rounded-lg",
-            "placeholder": "Введіть прізвище",
-        })
-    )
-    bio = forms.CharField(
-        label="Опис",
-        required=False,
-        widget=forms.Textarea(attrs={
-            "class": "w-full px-4 py-2 border rounded-lg",
-            "rows": 4,
-            "placeholder": "Короткий опис про себе",
-        })
-    )
-    avatar = forms.ImageField(label="Фото профілю", required=False)
 
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border rounded-lg'}),
+            'first_name': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border rounded-lg'}),
+            'last_name': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border rounded-lg'}),
+            'email': forms.EmailInput(attrs={'class': 'w-full px-4 py-2 border rounded-lg'}),
+        }
+
+class PublicProfileForm(forms.ModelForm):
     class Meta:
         model = PublicProfile
-        fields = ["username", "first_name", "last_name", "bio", "avatar", "slug", "background_color", "button_style"]
+        fields = ["slug", "background_color", "background", "button_style"]
         widgets = {
             "slug": forms.TextInput(attrs={"class": "w-full px-4 py-2 border rounded-lg", "placeholder": "yourname"}),
             "background_color": forms.TextInput(attrs={"type": "color", "class": "w-16 h-10"}),
+            "background": forms.ClearableFileInput(attrs={"class": "w-full py-2"}),
             "button_style": forms.Select(attrs={"class": "w-full px-4 py-2 border rounded-lg"}),
         }
+
 
 
 class SocialLinkForm(forms.ModelForm):

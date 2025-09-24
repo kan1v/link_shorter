@@ -10,10 +10,36 @@
 <body class="bg-gray-50 text-gray-900 flex flex-col min-h-screen">
 
     <!-- Навігація -->
-    <header class="bg-white shadow-md">
+    <header class="bg-white shadow-md relative">
         <div class="container mx-auto flex justify-between items-center p-4">
             <a href="{% url 'main:index' %}" class="text-2xl font-bold text-indigo-600">🌿 LinkTree</a>
-            <nav class="space-x-6">
+
+            <!-- Меню для ПК -->
+            <nav class="hidden lg:flex space-x-6">
+                <a href="{% url 'main:index' %}" class="hover:text-indigo-500">Головна</a>
+                <a href="{% url 'main:prices' %}" class="hover:text-indigo-500">Тарифи</a>
+                <a href="{% url 'main:examples' %}" class="hover:text-indigo-500">Приклади</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'accounts:profile' %}" class="hover:text-indigo-500">Мій профіль</a>
+                    <a href="{% url 'profiles:edit_public_profile' %}" class="hover:text-indigo-500">Налаштування та аналітика</a>
+                    <a href="{% url 'accounts:logout' %}" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Вийти</a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" class="hover:text-indigo-500">Увійти</a>
+                    <a href="{% url 'accounts:register' %}" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">Реєстрація</a>
+                {% endif %}
+            </nav>
+
+            <!-- Гамбургер для мобилки -->
+            <button id="menu-btn" class="lg:hidden flex flex-col w-6 h-5 justify-between">
+                <span class="block h-0.5 bg-gray-800 rounded transition-all duration-300"></span>
+                <span class="block h-0.5 bg-gray-800 rounded transition-all duration-300"></span>
+                <span class="block h-0.5 bg-gray-800 rounded transition-all duration-300"></span>
+            </button>
+        </div>
+
+        <!-- Мобильное меню -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white shadow-md">
+            <nav class="flex flex-col p-4 space-y-3">
                 <a href="{% url 'main:index' %}" class="hover:text-indigo-500">Головна</a>
                 <a href="{% url 'main:prices' %}" class="hover:text-indigo-500">Тарифи</a>
                 <a href="{% url 'main:examples' %}" class="hover:text-indigo-500">Приклади</a>
@@ -56,15 +82,32 @@
         </div>
     </footer>
 
-    <!-- JS для анімації -->
+    <!-- JS для гамбургера і анімацій -->
     <script>
-        // Додаємо анімацію для появи/зникання
+        // Мобильное меню
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+
+            // Анимация гамбургера
+            menuBtn.classList.toggle('open');
+            const spans = menuBtn.querySelectorAll('span');
+            spans[0].classList.toggle('rotate-45');
+            spans[0].classList.toggle('translate-y-2');
+            spans[1].classList.toggle('opacity-0');
+            spans[2].classList.toggle('-rotate-45');
+            spans[2].classList.toggle('-translate-y-2');
+        });
+
+        // Анимация появления сообщений
         document.addEventListener("DOMContentLoaded", () => {
             const alerts = document.querySelectorAll(".alert");
             alerts.forEach((alert) => {
                 setTimeout(() => {
                     alert.classList.add("opacity-0", "translate-y-2");
-                }, 4000); // зникне через 4с
+                }, 4000);
                 setTimeout(() => {
                     alert.remove();
                 }, 4500);
@@ -72,7 +115,7 @@
         });
     </script>
 
-    <!-- Tailwind кастомна анімація -->
+    <!-- Tailwind кастомная анімація -->
     <style>
         .animate-fade-in-down {
             animation: fadeInDown 0.5s ease-out;
