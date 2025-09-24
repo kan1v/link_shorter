@@ -3,156 +3,157 @@
 
 {% block content %}
 <div class="max-w-3xl mx-auto py-10 px-4">
-  <h1 class="text-3xl font-bold mb-6">Редагування публічного профілю</h1>
+    <h1 class="text-3xl font-bold mb-6">Редагування публічного профілю</h1>
 
-  <form method="POST" class="space-y-8">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
+    <form method="POST" enctype="multipart/form-data" class="space-y-8">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
 
-    <!-- Общие настройки -->
-    <div class="grid grid-cols-2 gap-4">
-      <div>
-        {{ form.background_color.label_tag }}
-        {{ form.background_color }}
-      </div>
-      <div>
-        {{ form.button_style.label_tag }}
-        {{ form.button_style }}
-      </div>
-    </div>
-
-    <!-- Соцмережі -->
-    <h2 class="text-2xl font-semibold mt-8 mb-4">Соцмережі</h2>
-    {{ social_formset.management_form }}
-    <div id="social-container" class="space-y-4">
-      {% for form in social_formset %}
-        <div class="form-row bg-gray-50 border rounded-xl p-4 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between">
-          {# скрытые поля (id, DELETE и т.п.) обязательно рендерить #}
-          <div class="hidden">
-            {% for hidden in form.hidden_fields %}
-              {{ hidden }}
-            {% endfor %}
-          </div>
-
-          <div class="w-full md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              {{ form.name.label_tag }} 
-              {{ form.name }}
+        <div class="bg-white shadow-lg rounded-xl p-6">
+            <!-- Tabs -->
+            <div class="flex border-b border-gray-200 mb-6">
+                <button type="button"
+                        class="tab-btn px-4 py-2 text-indigo-600 font-semibold border-b-2 border-indigo-600 focus:outline-none"
+                        data-tab="profile">
+                    Додавання посилань
+                </button>
+                <button type="button"
+                        class="tab-btn px-4 py-2 text-gray-500 hover:text-indigo-600 font-semibold border-b-2 border-transparent focus:outline-none"
+                        data-tab="analytics">
+                    Аналітика
+                </button>
             </div>
-            <div>
-              {{ form.url.label_tag }} 
-              {{ form.url }}
-            </div>
-          </div>
 
-          <div class="mt-3 md:mt-0 md:ml-4">
-            <button type="button" class="delete-btn inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg">
-              Видалити
-            </button>
-          </div>
+            <!-- Tab 1: Profile -->
+            <div id="tab-content-profile" class="tab-content">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>{{ form.background_color.label_tag }} {{ form.background_color }}</div>
+                    <div>{{ form.button_style.label_tag }} {{ form.button_style }}</div>
+                </div>
+
+                <!-- Соцмережі -->
+                <h2 class="text-2xl font-semibold mt-8 mb-4">Соцмережі</h2>
+                {{ social_formset.management_form }}
+                <div id="social-container" class="space-y-4">
+                    {% for sform in social_formset %}
+                        <div class="social-form bg-gray-50 border rounded-xl p-4 flex items-center justify-between shadow-sm">
+                            <div class="flex flex-col w-full space-y-2">
+                                {{ sform.id }}
+                                {{ sform.name.label_tag }} {{ sform.name }}
+                                {{ sform.url.label_tag }} {{ sform.url }}
+                                {{ sform.DELETE }}
+                            </div>
+                            <button type="button" class="delete-btn bg-red-500 text-white px-3 py-1 rounded-lg">Видалити</button>
+                        </div>
+                    {% endfor %}
+                </div>
+                <!-- пустая форма -->
+                <div id="empty-social-form" class="hidden">
+                    <div class="social-form bg-gray-50 border rounded-xl p-4 flex items-center justify-between shadow-sm">
+                        <div class="flex flex-col w-full space-y-2">
+                            {{ social_formset.empty_form.id }}
+                            {{ social_formset.empty_form.name.label_tag }} {{ social_formset.empty_form.name }}
+                            {{ social_formset.empty_form.url.label_tag }} {{ social_formset.empty_form.url }}
+                            {{ social_formset.empty_form.DELETE }}
+                        </div>
+                        <button type="button" class="delete-btn bg-red-500 text-white px-3 py-1 rounded-lg">Видалити</button>
+                    </div>
+                </div>
+                <button type="button" id="add-social" class="bg-indigo-600 text-white px-4 py-2 rounded-lg mt-2">+ Додати соцмережу</button>
+
+                <!-- Кнопки -->
+                <h2 class="text-2xl font-semibold mt-8 mb-4">Кнопки</h2>
+                {{ button_formset.management_form }}
+                <div id="button-container" class="space-y-4">
+                    {% for bform in button_formset %}
+                        <div class="button-form bg-gray-50 border rounded-xl p-4 flex items-center justify-between shadow-sm">
+                            <div class="flex flex-col w-full space-y-2">
+                                {{ bform.id }}
+                                {{ bform.title.label_tag }} {{ bform.title }}
+                                {{ bform.url.label_tag }} {{ bform.url }}
+                                {{ bform.order.label_tag }} {{ bform.order }}
+                                {{ bform.DELETE }}
+                            </div>
+                            <button type="button" class="delete-btn bg-red-500 text-white px-3 py-1 rounded-lg">Видалити</button>
+                        </div>
+                    {% endfor %}
+                </div>
+                <!-- пустая форма -->
+                <div id="empty-button-form" class="hidden">
+                    <div class="button-form bg-gray-50 border rounded-xl p-4 flex items-center justify-between shadow-sm">
+                        <div class="flex flex-col w-full space-y-2">
+                            {{ button_formset.empty_form.id }}
+                            {{ button_formset.empty_form.title.label_tag }} {{ button_formset.empty_form.title }}
+                            {{ button_formset.empty_form.url.label_tag }} {{ button_formset.empty_form.url }}
+                            {{ button_formset.empty_form.order.label_tag }} {{ button_formset.empty_form.order }}
+                            {{ button_formset.empty_form.DELETE }}
+                        </div>
+                        <button type="button" class="delete-btn bg-red-500 text-white px-3 py-1 rounded-lg">Видалити</button>
+                    </div>
+                </div>
+                <button type="button" id="add-button" class="bg-indigo-600 text-white px-4 py-2 rounded-lg mt-2">+ Додати кнопку</button>
+            </div>
+
+            <!-- Tab 2: Analytics -->
+            <div id="tab-content-analytics" class="tab-content hidden">
+                <p class="text-gray-600">Тут згодом можна вивести аналітику профілю (перегляди, кліки тощо).</p>
+            </div>
+
+            <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-lg mt-6">Зберегти зміни</button>
         </div>
-      {% endfor %}
-    </div>
-
-    <div class="mt-2">
-      <button type="button" id="add-social" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">+ Додати соцмережу</button>
-    </div>
-
-    {# пустая форма-шаблон, которую будем клонировать #}
-    <div id="sociallink_set-empty" class="hidden">
-      {{ social_formset.empty_form.as_p }}
-    </div>
-
-    <!-- Кнопки -->
-    <h2 class="text-2xl font-semibold mt-8 mb-4">Кнопки</h2>
-    {{ button_formset.management_form }}
-    <div id="button-container" class="space-y-4">
-      {% for form in button_formset %}
-        <div class="form-row bg-gray-50 border rounded-xl p-4 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between">
-          <div class="hidden">
-            {% for hidden in form.hidden_fields %}
-              {{ hidden }}
-            {% endfor %}
-          </div>
-
-          <div class="w-full md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              {{ form.title.label_tag }}
-              {{ form.title }}
-            </div>
-            <div>
-              {{ form.url.label_tag }}
-              {{ form.url }}
-            </div>
-          </div>
-
-          <div class="mt-3 md:mt-0 md:ml-4">
-            <button type="button" class="delete-btn inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg">
-              Видалити
-            </button>
-          </div>
-        </div>
-      {% endfor %}
-    </div>
-
-    <div class="mt-2">
-      <button type="button" id="add-button" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">+ Додати кнопку</button>
-    </div>
-
-    <div id="custombutton_set-empty" class="hidden">
-      {{ button_formset.empty_form.as_p }}
-    </div>
-
-    <div class="pt-6">
-      <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-lg">Зберегти зміни</button>
-    </div>
-  </form>
+    </form>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  function addForm(prefix, containerId, emptyId) {
-    const totalInput = document.querySelector(`input[name="${prefix}-TOTAL_FORMS"]`);
-    if (!totalInput) return;
-    const formCount = parseInt(totalInput.value, 10);
+// Tabs
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('text-indigo-600','border-indigo-600');
+            b.classList.add('text-gray-500','border-transparent');
+        });
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+
+        this.classList.add('text-indigo-600','border-indigo-600');
+        this.classList.remove('text-gray-500','border-transparent');
+        document.getElementById('tab-content-' + this.dataset.tab).classList.remove('hidden');
+    });
+});
+
+// Add form
+function addForm(prefix, containerId, templateId) {
+    const totalForms = document.querySelector(`#id_${prefix}-TOTAL_FORMS`);
+    let formCount = parseInt(totalForms.value);
+
     const container = document.getElementById(containerId);
-    const templateWrapper = document.getElementById(emptyId);
-    if (!templateWrapper) return;
-    // empty_form.as_p возвращает <p> .. поля .. </p> — используем её
-    let newFormHtml = templateWrapper.innerHTML.replace(/__prefix__/g, formCount);
-    // Создаём элемент для обёртки с такими же классами, как и у существующих
-    const wrapper = document.createElement('div');
-    wrapper.className = 'form-row bg-gray-50 border rounded-xl p-4 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between mt-2';
-    wrapper.innerHTML = newFormHtml;
-    container.appendChild(wrapper);
-    totalInput.value = formCount + 1;
-  }
+    const template = document.getElementById(templateId).firstElementChild.cloneNode(true);
 
-  document.getElementById('add-social')?.addEventListener('click', function() {
-    addForm('sociallink_set', 'social-container', 'sociallink_set-empty');
-  });
+    template.querySelectorAll('[name],[id],label').forEach(el => {
+        if (el.name) el.name = el.name.replace('__prefix__', formCount);
+        if (el.id) el.id = el.id.replace('__prefix__', formCount);
+        if (el.htmlFor) el.htmlFor = el.htmlFor.replace('__prefix__', formCount);
+    });
 
-  document.getElementById('add-button')?.addEventListener('click', function() {
-    addForm('custombutton_set', 'button-container', 'custombutton_set-empty');
-  });
+    container.appendChild(template);
+    totalForms.value = formCount + 1;
+}
 
-  // Делит кнопку: помечаем DELETE и скрываем форму
-  document.addEventListener('click', function(e) {
-    if (e.target.closest('.delete-btn')) {
-      const btn = e.target.closest('.delete-btn');
-      const formRow = btn.closest('.form-row');
-      if (!formRow) return;
-      // найдем поле DELETE (input name заканчивается на -DELETE)
-      const deleteInput = formRow.querySelector('input[name$="-DELETE"]');
-      if (deleteInput) {
-        deleteInput.checked = true;
-      } else {
-        // если формы добавлена динамически без hidden DELETE, можно удалить узел
-        // но лучше отметить для сервера — так что ничего не делаем
-      }
-      formRow.style.display = 'none';
+document.getElementById('add-social').addEventListener('click', function() {
+    addForm('social', 'social-container', 'empty-social-form');
+});
+
+document.getElementById('add-button').addEventListener('click', function() {
+    addForm('button', 'button-container', 'empty-button-form');
+});
+
+// Delete form
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('delete-btn')) {
+        const parent = e.target.closest('.social-form, .button-form');
+        const deleteInput = parent.querySelector('input[type="checkbox"][name*="DELETE"]');
+        if (deleteInput) deleteInput.checked = true;
+        parent.style.display = 'none';
     }
-  });
 });
 </script>
 {% endblock %}
