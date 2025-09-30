@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils.text import slugify
 import uuid
 
+
 class SubscriptionPlan(models.TextChoices):
     FREE = "free", "Безкоштовний"
     PRO = "pro", "Pro"
@@ -27,6 +28,9 @@ class PublicProfile(models.Model):
     )
     text_color = models.CharField(max_length=20, default="#000000", verbose_name="Колір тексту")
     slug = models.SlugField(unique=True, verbose_name="URL-ім'я", help_text="Наприклад: yourname, буде доступно за /u/yourname/")    
+    stripe_customer_id = models.CharField(max_length=255, blank=True, null=True)
+    stripe_subscription_id = models.CharField(max_length=255, blank=True, null=True)
+    is_active_subscription = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Публічний профіль {self.user.username}"    
@@ -75,3 +79,16 @@ class CustomButton(models.Model):
     def __str__(self):
         return f"{self.title} ({self.profile.user.username})"
 
+
+class ProfileClick(models.Model):
+    profile = models.ForeignKey(PublicProfile, on_delete=models.CASCADE, related_name="clicks")
+    link = models.URLField()  # ссылка, на которую кликнули
+    utm_source = models.CharField(max_length=50, blank=True, null=True)
+    utm_medium = models.CharField(max_length=50, blank=True, null=True)
+    utm_campaign = models.CharField(max_length=50, blank=True, null=True)
+    user_agent = models.CharField(max_length=200, blank=True, null=True)
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Click on {self.link} ({self.profile.user.username})"

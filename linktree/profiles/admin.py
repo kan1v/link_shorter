@@ -16,15 +16,15 @@ class CustomButtonInline(admin.TabularInline):
 @admin.register(PublicProfile)
 class PublicProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'slug','qr_code', 'background', 'background_color',
-                    'button_style', 'text_color')
-    list_filter = ('user', 'slug')
+                    'button_style', 'text_color', 'plan', 'stripe_customer_id', 'stripe_subscription_id', 'is_active_subscription')
+    list_filter = ('user', 'slug', 'plan')
     search_fields = ('user', 'slug')
     inlines = [SocialLinksInline, CustomButtonInline]
 
     fieldsets = (
         ('Информация о пользователе',{
-            'fields': ('user', 'slug','qr_code', 'background', 'background_color',
-                    'button_style', 'text_color')
+            'fields': ('user','plan' ,'slug','qr_code', 'background', 'background_color',
+                    'button_style', 'text_color', 'stripe_customer_id', 'stripe_subscription_id', 'is_active_subscription')
         }),
 
     )

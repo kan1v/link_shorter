@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'main',
     'accounts',
     'profiles',
+    'payment',
 ]
 
 MIDDLEWARE = [
@@ -133,3 +134,5 @@ AUTH_USER_MODEL = 'accounts.User'
 
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
 STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
+STRIPE_PRICE_PRO = os.getenv('STRIPE_PRICE_PRO')
+STRIPE_PRICE_PREMIUM = os.getenv('STRIPE_PRICE_PREMIUM')
